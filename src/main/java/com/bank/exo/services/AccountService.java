@@ -11,11 +11,11 @@ public class AccountService {
         return account.toDeposit(depositAmount);
     }
 
-    public int toWithdrawalAmount(Account account, int withdrawalAmount) {
-        return account.toWithdrawalAmount(withdrawalAmount);
+    public int toWithdraw(Account account, int withdrawalAmount) {
+        return account.toWithdraw(withdrawalAmount);
     }
 
     public String toPrintStatement(Account account) {
-        return account.transactions.toString();
+        return account.getHistory();
     }
 }

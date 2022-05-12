@@ -1,28 +1,26 @@
 package com.bank.exo.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Transaction {
     private Operation operation;
+    private LocalDateTime date;
     private int amount;
     private int balance;
-    private LocalDateTime date;
 
     public Transaction(Operation operation, int amount) {
         this.amount = amount;
+        this.balance = amount;
         this.date = LocalDateTime.now();
         this.operation = operation;
     }
 
     public Transaction(Operation operation, int amount, int balance) {
         this.amount = amount;
-        this.date = now();
+        this.date = LocalDateTime.now();
         this.operation = operation;
         this.balance = balance;
-    }
-
-    private LocalDateTime now(){
-       return LocalDateTime.now();
     }
 
     public Operation getOperation() {
@@ -43,11 +41,9 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "\nTransaction{\n" +
-                "operation=" + operation +
-                ",\n amount=" + amount +
-                ",\n balance=" + balance +
-                ",\n date=" + date +
-                "\n}";
+        return operation +
+                ", " + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")) +
+                ", amount=" + amount +
+                ", balance=" + balance;
     }
 }

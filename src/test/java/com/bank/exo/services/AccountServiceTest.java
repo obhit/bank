@@ -4,6 +4,7 @@ import com.bank.exo.model.Account;
 import com.bank.exo.model.Operation;
 import com.bank.exo.model.Transaction;
 import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,10 +17,10 @@ class AccountServiceTest {
         // WHEN
         var account = new AccountService().createAccount(initialAmount);
         // THEN
-        assertThat(account.getAmount()).isEqualTo(10);
-        assertThat(account.transactions).hasSize(1);
-        assertThat(account.transactions).extracting(Transaction::getAmount, Transaction::getBalance, Transaction::getOperation)
-                .containsExactly(Tuple.tuple(10, 0, Operation.DEPOSIT));
+        assertThat(account.getBalance()).isEqualTo(10);
+        assertThat(account.getTransactions()).hasSize(1);
+        assertThat(account.getTransactions()).extracting(Transaction::getAmount, Transaction::getBalance, Transaction::getOperation)
+                .containsExactly(Tuple.tuple(10, 10, Operation.CREATION));
     }
 
     @Test
@@ -39,7 +40,7 @@ class AccountServiceTest {
         Account account = new Account(100);
         int withdrawalAmount = 50;
         // WHEN
-        var finalAmount = new AccountService().toWithdrawalAmount(account, withdrawalAmount);
+        var finalAmount = new AccountService().toWithdraw(account, withdrawalAmount);
         // THEN
         assertThat(finalAmount).isEqualTo(50);
     }
@@ -47,19 +48,33 @@ class AccountServiceTest {
     @Test
     void shouldShowHistoryWhenCustomerWantToCheckHisOperations(){
         // GIVEN
-        Account account = new Account(100);
+        AccountService accountService = new AccountService();
+        Account account = accountService.createAccount(100);
         // WHEN
-        account.toDeposit(300);
-        account.toDeposit(50);
-        account.toWithdrawalAmount(50);
-        account.toDeposit(100);
+        accountService.toDeposit(account, 300);
+        accountService.toDeposit(account, 50);
+        accountService.toWithdraw(account, 50);
+        accountService.toDeposit(account, 100);
         // THEN
-        assertThat(account.transactions).extracting(Transaction::getAmount, Transaction::getBalance, Transaction::getOperation)
+        assertThat(account.getTransactions()).extracting(Transaction::getAmount, Transaction::getBalance, Transaction::getOperation)
                 .containsExactly(
-                        Tuple.tuple(100, 0, Operation.DEPOSIT),
+                        Tuple.tuple(100, 100, Operation.CREATION),
                         Tuple.tuple(300, 400, Operation.DEPOSIT),
                         Tuple.tuple(50, 450, Operation.DEPOSIT),
                         Tuple.tuple(50, 400, Operation.WITHDRAWAL),
                         Tuple.tuple(100, 500, Operation.DEPOSIT));
+    }
+
+    @Test
+    void shouldThrowIllegalExceptionWhenInsufficientBalance(){
+        // GIVEN
+        AccountService accountService = new AccountService();
+        var account = accountService.createAccount(10);
+
+        // WHEN
+        IllegalStateException thrown = Assertions.assertThrows(IllegalStateException.class, () -> account.toWithdraw(11));
+
+        // THEN
+        Assertions.assertEquals(String.format("Can't withdraw [%d] : Insufficient balance [%d] ",11, 10), thrown.getMessage());
     }
 }
