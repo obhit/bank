@@ -3,8 +3,8 @@ package com.bank.exo.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bank.exo.model.Balance.DEPOSIT;
-import static com.bank.exo.model.Balance.WITHDRAWAL;
+import static com.bank.exo.model.Operation.DEPOSIT;
+import static com.bank.exo.model.Operation.WITHDRAWAL;
 
 public class Account {
     private int amount;
@@ -17,15 +17,23 @@ public class Account {
     }
 
     public int toDeposit(int depositAmount){
-        amount+=depositAmount;
-        transactions.add(new Transaction(DEPOSIT, depositAmount));
+        plus(depositAmount);
+        transactions.add(new Transaction(DEPOSIT, depositAmount, amount));
         return amount;
     }
 
     public int toWithdrawalAmount(int withdrawalAmount) {
-        amount-=withdrawalAmount;
-        transactions.add(new Transaction(WITHDRAWAL, withdrawalAmount));
+        minus(withdrawalAmount);
+        transactions.add(new Transaction(WITHDRAWAL, withdrawalAmount, amount));
         return amount;
+    }
+
+    private void minus(int amount){
+        this.amount-=amount;
+    }
+
+    private void plus(int amount){
+        this.amount+=amount;
     }
 
     public int getAmount() {

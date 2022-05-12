@@ -1,5 +1,5 @@
 package com.bank.exo.model;
 
-public enum Balance {
+public enum Operation {
     DEPOSIT, WITHDRAWAL;
 }
