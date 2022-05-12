@@ -18,4 +18,15 @@ class AccountServiceTest {
         assertThat(finalAmount).isEqualTo(150);
     }
 
+    @Test
+    void shouldDecrementAccountOf50eurosWhenWithdrawal50Euros(){
+        // GIVEN
+        Account account = new Account(100);
+        int withdrawalAmount = 50;
+        // WHEN
+        var finalAmount = new AccountService().toWithdrawalAmount(account, withdrawalAmount);
+        // THEN
+        assertThat(finalAmount).isEqualTo(50);
+    }
+
 }

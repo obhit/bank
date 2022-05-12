@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.bank.exo.model.Balance.DEPOSIT;
+import static com.bank.exo.model.Balance.WITHDRAWAL;
 
 public class Account {
     private int amount;
@@ -15,10 +16,20 @@ public class Account {
         this.transactions.add(transaction);
     }
 
-    public int toDeposit(int amount){
-        this.amount+=amount;
-        transactions.add(new Transaction(DEPOSIT, amount));
-        return this.amount;
+    public int toDeposit(int depositAmount){
+        amount+=depositAmount;
+        transactions.add(new Transaction(DEPOSIT, depositAmount));
+        return amount;
+    }
+
+    public int toWithdrawalAmount(int withdrawalAmount) {
+        amount-=withdrawalAmount;
+        transactions.add(new Transaction(WITHDRAWAL, withdrawalAmount));
+        return amount;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
     @Override

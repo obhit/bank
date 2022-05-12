@@ -7,6 +7,7 @@ public class AccountService {
         return account.toDeposit(depositAmount);
     }
 
-
-
+    public int toWithdrawalAmount(Account account, int withdrawalAmount) {
+        return account.toWithdrawalAmount(withdrawalAmount);
+    }
 }
